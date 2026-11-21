@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Estoque</title>
+    <style>
+
+   * { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f1f5f2;
+    color: #1f2937;
+}
+
+h1 {
+    margin: 0;
+    padding: 18px 24px;
+    background: #166534;
+    color: #fff;
+    font-size: 1.35rem;
+    letter-spacing: 0.3px;
+}
+
+#btn-sair {
+    position: fixed;
+    top: 12px;
+    right: 20px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    padding: 7px 16px;
+    z-index: 10;
+}
+
+#btn-sair:hover { background: rgba(255, 255, 255, 0.15); }
+
+#tela-login {
+    display: flex;
+    justify-content: center;
+    padding: 8vh 16px;
+}
+
+#tela-estoque {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+}
+
+h2 {
+    margin: 36px 0 12px;
+    font-size: 1.15rem;
+    color: #14532d;
+    padding-left: 10px;
+    border-left: 4px solid #22c55e;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+}
+
+#form-login {
+    width: 100%;
+    max-width: 380px;
+}
+
+label {
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+input, select {
+    margin-bottom: 16px;
+    padding: 11px 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #fff;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+form p {
+    margin: 0 0 14px;
+    font-size: 0.9rem;
+    color: #4b5563;
+}
+
+button {
+    padding: 12px 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #fff;
+    background: #16a34a;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+button:hover { background: #15803d; }
+
+#erro-login {
+    margin: 12px 0 0;
+    color: #c0392b;
+    font-weight: 600;
+}
+
+#mensagem, #resultado-venda {
+    margin: 14px 0 0;
+    font-weight: 600;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+}
+
+th, td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+th {
+    background: #14532d;
+    color: #fff;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+tbody tr:nth-child(even) { background: #f8faf8; }
+tbody tr:hover { background: #ecf7ef; }
+tbody tr:last-child td { border-bottom: none; }
+
+    small {
+    display: block;
+    margin-top: -10px;
+    margin-bottom: 18px;
+    font-size: 0.85rem;
+    color: #4b5563;
+}
+
+.cards-resumo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.card {
+    background: #fff;
+    padding: 18px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+    border-left: 4px solid #16a34a;
+}
+
+.card span {
+    display: block;
+    font-size: 0.85rem;
+    color: #4b5563;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.card strong {
+    font-size: 1.5rem;
+    color: #1f2937;
+}
+
+.login-topo {
+    margin-bottom: 20px;
+}
+
+.login-badge {
+    display: inline-block;
+    background: #dcfce7;
+    color: #166534;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.login-topo h2 {
+    margin: 0 0 6px;
+    padding-left: 0;
+    border-left: none;
+    font-size: 1.4rem;
+    color: #111827;
+}
+
+.login-topo p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+.login-rodape {
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+</style>
+</head>
+<body>
+    <h1>Controle de Estoque</h1>
+
+   <section id="tela-login">
+        <form id="form-login">
+            <div class="login-topo">
+                <span class="login-badge">Painel Administrativo</span>
+                <h2>Bem-vindo de volta</h2>
+                <p>Acesse com suas credenciais para gerenciar produtos, lotes, vendas e perdas.</p>
+            </div>
+
+            <label for="email">E-mail</label>
+            <input type="email" id="email" placeholder="seuemail@exemplo.com" required>
+
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" placeholder="••••••••" required>
+
+            <button type="submit">Entrar no sistema</button>
+            <p id="erro-login"></p>
+
+            <div class="login-rodape">
+                Controle de Estoque · Acesso restrito a operadores
+            </div>
+        </form>
+    </section>
+
+        <section id="tela-estoque" hidden>
+        <button id="btn-sair">Sair</button>
+        <p id="mensagem"></p>
+
+        <div class="cards-resumo">
+            <div class="card">
+                <span>Produtos em estoque</span>
+                <strong id="card-produtos">0</strong>
+            </div>
+            <div class="card" style="border-left-color: #e67e22;">
+                <span>Alertas de vencimento</span>
+                <strong id="card-alertas">0</strong>
+            </div>
+            <div class="card" style="border-left-color: #c0392b;">
+                <span>Prejuízo em perdas</span>
+                <strong id="card-prejuizo">R$ 0,00</strong>
+            </div>
+        </div>
+
+        <h2>Novo produto</h2>
+        <form id="form-produto">
+            <label for="prod-nome">Nome</label>
+            <input type="text" id="prod-nome" placeholder="Ex: Macarrão 500g" required>
+
+            <label for="prod-categoria">Categoria</label>
+            <select id="prod-categoria"></select>
+
+            <label for="prod-unidade">Unidade</label>
+            <select id="prod-unidade">
+                <option value="un">un</option>
+                <option value="kg">kg</option>
+            </select>
+
+            <label for="prod-preco">Preço de venda (R$)</label>
+            <input type="number" id="prod-preco" min="0" step="0.01" required>
+
+            <button type="submit">Cadastrar produto</button>
+        </form>
+
+
+        <h2>Entrada de estoque</h2>
+        <form id="form-lote">
+            <label for="lote-produto">Produto</label>
+            <div style="display: flex; gap: 8px; align-items: stretch;">
+                <select id="lote-produto" style="flex: 1;"></select>
+                <button type="button" id="btn-excluir-produto" style="background: #c0392b; margin-bottom: 16px;">Excluir</button>
+            </div>
+
+            <label for="lote-quantidade">Quantidade</label>
+            <input type="number" id="lote-quantidade" min="0" step="any" required>
+
+            <label for="lote-validade">Validade</label>
+            <input type="date" id="lote-validade" required>
+
+            <label for="lote-custo">Custo unitário (R$)</label>
+            <input type="number" id="lote-custo" min="0" step="0.01" required>
+
+            <button type="submit">Dar entrada</button>
+        </form>
+
+<h2>Venda</h2>
+<form id="form-venda">
+    <label for="venda-produto">Produto</label>
+    <select id="venda-produto"></select>
+
+    <label for="venda-quantidade">Quantidade</label>
+    <input type="number" id="venda-quantidade" min="0" step="any" required>
+
+<span id="venda-disponivel"></span>
+
+    <button type="submit">Registrar venda</button>
+</form>
+
+
+        <h2>Registrar perda</h2>
+<form id="form-perda">
+    <label for="perda-produto">Produto</label>
+    <select id="perda-produto"></select>
+
+    <label for="perda-lote">Lote</label>
+    <select id="perda-lote"></select>
+
+    <label for="perda-quantidade">Quantidade</label>
+    <input type="number" id="perda-quantidade" min="0" step="any">
+    <small>Deixe em branco para dar baixa no lote inteiro.</small>
+
+    <label for="perda-motivo">Motivo</label>
+    <select id="perda-motivo">
+        <option value="avaria">Avaria</option>
+        <option value="quebra">Quebra</option>
+        <option value="furto">Furto</option>
+        <option value="outro">Outro</option>
+    </select>
+
+    <button type="submit">Registrar perda</button>
+</form>
+
+
+        <h2>Estoque atual</h2>
+        <input type="text" id="busca-estoque" placeholder="Filtrar produto pelo nome..." style="width: 100%;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Unidade</th>
+                    <th>Quantidade em estoque</th>
+                </tr>
+            </thead>
+            <tbody id="lista-estoque"></tbody>
+        </table>
+
+        <h2>Alertas de vencimento</h2>
+        <button type="button" id="btn-baixar-vencidos" style="margin-bottom: 14px; background: #c0392b;">Baixar todos os vencidos</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Validade</th>
+                    <th>Situação</th>
+                </tr>
+            </thead>
+            <tbody id="lista-vencimentos"></tbody>
+        </table>
+        
+<h2>Histórico de vendas</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+            <p id="total-vendas" style="font-weight: 600; color: #166534; margin: 0;"></p>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <select id="filtro-mes-vendas" style="margin: 0; padding: 6px 10px; font-size: 0.9rem;">
+                    <option value="">Todos os meses</option>
+                    <option value="01">Janeiro</option>
+                    <option value="02">Fevereiro</option>
+                    <option value="03">Março</option>
+                    <option value="04">Abril</option>
+                    <option value="05">Maio</option>
+                    <option value="06">Junho</option>
+                    <option value="07">Julho</option>
+                    <option value="08">Agosto</option>
+                    <option value="09">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+                </select>
+                <select id="filtro-ano-vendas" style="margin: 0; padding: 6px 10px; font-size: 0.9rem;"></select>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody id="lista-vendas"></tbody>
+        </table>
+
+   <script src="/static/script.js"></script>
+</body>
+</html>
